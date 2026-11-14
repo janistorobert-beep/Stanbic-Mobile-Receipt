@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stanbic Bank · Transfer Confirmed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sb-primary:   #01008C;
+    --sb-royal:     #005EB8;
+    --sb-navy:      #001E50;
+    --sb-gold:      #FFB81C;
+    --sb-white:     #FFFFFF;
+    --sb-text:      #1A2233;
+    --sb-muted:     #5B6577;
+    --sb-border:    #E4E8F0;
+    --sb-soft:      #F4F6FA;
+    --sb-page:      #EEF1F7;
+    --sb-green:     #0E7A4A;
+    --sb-green-soft:#E8F5EE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--sb-page); color: var(--sb-text);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+    min-height: 100vh; display: flex; justify-content: center; padding: 0;
+  }
+  .phone {
+    width: 100%; max-width: 430px; min-height: 100vh;
+    background: var(--sb-white); display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+
+  .toolbar {
+    flex-shrink: 0; background: var(--sb-white);
+    padding: max(14px, env(safe-area-inset-top, 0px)) 16px 14px;
+    border-bottom: 1px solid var(--sb-border);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; z-index: 30;
+  }
+  .toolbar-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .toolbar-logo { height: 30px; width: auto; display: block; flex-shrink: 0; }
+  .toolbar-actions { display: flex; gap: 8px; }
+  .tool-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 12px; font-size: 12px; font-weight: 600;
+    border-radius: 8px; font-family: inherit; cursor: pointer;
+    transition: all .15s; border: 1px solid var(--sb-border);
+    background: var(--sb-white); color: var(--sb-primary);
+  }
+  .tool-btn:hover { border-color: var(--sb-primary); background: #F6F8FC; }
+  .tool-btn.copied { background: var(--sb-green); border-color: var(--sb-green); color: #fff; }
+  .tool-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .top {
+    position: relative; flex-shrink: 0;
+    background: linear-gradient(160deg, var(--sb-primary) 0%, var(--sb-royal) 100%);
+    padding: 22px 22px 26px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+  .top::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--sb-gold);
+    border-top-left-radius: 20px; border-top-right-radius: 20px;
+  }
+  .brand-row { display: flex; align-items: center; gap: 10px; }
+  .top-logo { height: 30px; width: auto; display: block; flex-shrink: 0; }
+  .brand-text {
+    font-size: 20px; font-weight: 800; letter-spacing: -0.5px;
+    color: #fff; line-height: 1; white-space: nowrap;
+  }
+  .brand-text .dot { color: var(--sb-gold); }
+
+  .page-title {
+    margin-top: 16px; font-size: 19px; font-weight: 800;
+    color: #fff; letter-spacing: -0.3px; line-height: 1.25;
+  }
+  .page-sub {
+    margin-top: 6px; font-size: 12.5px; color: rgba(255,255,255,0.82);
+    line-height: 1.55; max-width: 320px;
+  }
+
+  .body {
+    flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 22px 20px 24px;
+    display: flex; flex-direction: column;
+  }
+
+  .status-block { text-align: center; margin-bottom: 20px; }
+  .tick {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--sb-green);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 0 0 8px rgba(14,122,74,0.12),
+                0 10px 26px rgba(14,122,74,0.35);
+    animation: popIn .55s cubic-bezier(.4, 1.4, .6, 1);
+  }
+  .tick svg {
+    width: 46px; height: 46px;
+    stroke: #fff; fill: none;
+    stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 60; stroke-dashoffset: 60;
+    animation: drawCheck .6s ease-out .25s forwards;
+  }
+  @keyframes popIn {
+    0%   { transform: scale(0.4); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+  .status-title {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.3px;
+    color: var(--sb-navy); line-height: 1.3; margin-bottom: 6px;
+  }
+  .status-desc {
+    font-size: 12.5px; color: var(--sb-muted); line-height: 1.6;
+    max-width: 320px; margin: 0 auto;
+  }
+
+  .amount-block {
+    display: flex; align-items: baseline; justify-content: center; gap: 6px;
+    margin: 22px 0 6px;
+  }
+  .amount-block .cur { font-size: 16px; font-weight: 700; color: var(--sb-green); }
+  .amount-block .val {
+    font-size: 36px; font-weight: 900; letter-spacing: -1.2px;
+    color: var(--sb-green); line-height: 1;
+  }
+  .credited-label {
+    text-align: center; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.7px; text-transform: uppercase;
+    color: var(--sb-muted); margin-bottom: 18px;
+  }
+
+  .confirm-notice {
+    background: var(--sb-green-soft);
+    border: 1px solid #C5E4D4;
+    border-left: 3px solid var(--sb-green);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 12.5px;
+    color: #0A5C38;
+    line-height: 1.65;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .confirm-notice strong {
+    color: #0A5C38; font-weight: 800; display: block;
+    margin-bottom: 6px; font-size: 13px;
+  }
+  .confirm-notice .small-note {
+    display: block; margin-top: 8px;
+    font-size: 11.5px; color: #0A5C38; line-height: 1.55;
+  }
+
+  .recipient-line {
+    text-align: center;
+    font-size: 12px; color: var(--sb-muted); line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .recipient-line .recv-name {
+    display: block; font-weight: 700; color: var(--sb-text);
+    font-size: 14px; margin-top: 2px; word-break: break-word;
+  }
+
+  .details-panel {
+    width: 100%;
+    background: var(--sb-soft); border-radius: 12px;
+    border: 1px solid var(--sb-border);
+    padding: 4px 16px; text-align: left;
+    margin-bottom: 20px;
+  }
+  .detail-row {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; padding: 12px 0;
+    border-bottom: 1px solid var(--sb-border);
+    font-size: 12px;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row .k { color: var(--sb-muted); flex-shrink: 0; font-weight: 500; }
+  .detail-row .v {
+    font-weight: 700; text-align: right;
+    word-break: break-word; color: var(--sb-text);
+  }
+  .detail-row .v.mono {
+    font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 11px; letter-spacing: 0.3px;
+    background: #fff; padding: 2px 7px; border-radius: 5px;
+    border: 1px solid var(--sb-border);
+  }
+  .detail-row .v.status-done {
+    color: var(--sb-green); font-weight: 800;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .detail-row .v.status-done::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--sb-green); display: inline-block;
+  }
+
+  .sb-footer {
+    width: 100%; margin-top: 4px;
+    background: var(--sb-navy);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; text-align: left;
+  }
+  .foot-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .sb-footer .foot-logo {
+    height: 26px; width: auto; display: block; flex-shrink: 0;
+  }
+  .sb-footer .foot-brand-text {
+    font-size: 16px; font-weight: 800; letter-spacing: -0.3px;
+    color: #fff; line-height: 1; white-space: nowrap;
+  }
+  .sb-footer .foot-brand-text .dot { color: var(--sb-gold); }
+  .sb-footer .foot-support {
+    font-size: 10.5px; color: rgba(255,255,255,0.72); line-height: 1.5; font-weight: 500;
+    text-align: right;
+  }
+  .sb-footer .foot-support strong {
+    color: var(--sb-gold); font-weight: 700; font-size: 11.5px;
+  }
+
+  .close-btn {
+    width: 100%; margin-top: 18px; min-height: 64px;
+    background: var(--sb-primary); color: #fff;
+    border: none; border-radius: 12px;
+    font-family: inherit; font-size: 17px; font-weight: 800;
+    letter-spacing: 0.4px; cursor: pointer;
+    box-shadow: 0 10px 24px rgba(1,0,140,0.28);
+    transition: filter .15s, transform .1s;
+    display: flex; align-items: center; justify-content: center;
+    padding: 18px 24px;
+  }
+  .close-btn:hover { filter: brightness(1.08); }
+  .close-btn:active { transform: scale(0.985); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--sb-navy); color: #fff; padding: 11px 18px; border-radius: 9px;
+    font-size: 12.5px; font-weight: 600; opacity: 0; transition: all .3s ease;
+    z-index: 50; pointer-events: none; max-width: 90%; text-align: center;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 380px) {
+    .toolbar-logo { height: 26px; }
+    .tool-btn { padding: 7px 10px; font-size: 11px; }
+    .top { padding: 18px 18px 22px; }
+    .top-logo { height: 26px; }
+    .brand-text { font-size: 18px; }
+    .body { padding: 18px 18px 18px; }
+    .page-title { font-size: 17px; }
+    .tick { width: 74px; height: 74px; }
+    .tick svg { width: 38px; height: 38px; }
+    .status-title { font-size: 19px; }
+    .amount-block .val { font-size: 30px; }
+    .close-btn { min-height: 60px; font-size: 16px; }
+    .sb-footer { padding: 14px 16px; }
+    .sb-footer .foot-logo { height: 22px; }
+    .sb-footer .foot-brand-text { font-size: 14px; }
+  }
+  @media (min-width: 640px) {
+    body { padding: 32px 0; align-items: center; }
+    .phone {
+      min-height: calc(100vh - 64px); max-height: 900px;
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(1,0,140,0.18);
+      overflow: hidden;
+    }
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .close-btn, .sb-footer { display: none !important; }
+    .phone { box-shadow: none; }
+    .top { background: #fff; border-bottom: 1px solid #ccc; padding: 12px 0; }
+    .page-title { color: var(--sb-green); }
+    .page-sub { color: var(--sb-muted); }
+    .tick { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <div class="toolbar">
+    <div class="toolbar-brand">
+      <img
+        class="toolbar-logo"
+        src="https://cdn.brandfetch.io/idrjWN3IVw/w/582/h/164/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B"
+        alt="Stanbic Bank"
+        referrerpolicy="no-referrer"
+        onerror="this.style.display='none'"
+      >
+    </div>
+    <div class="toolbar-actions">
+      <button class="tool-btn" id="copyBtn" onclick="copyReceipt()">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span id="copyLbl">Copy</span>
+      </button>
+      <button class="tool-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span id="printLbl">Print</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="top">
+    <div class="brand-row">
+      <img
+        class="top-logo"
+        src="https://cdn.brandfetch.io/idrjWN3IVw/w/582/h/164/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B"
+        alt="Stanbic Bank"
+        referrerpolicy="no-referrer"
+        onerror="this.style.display='none'"
+      >
+      <span class="brand-text">Stanbic<span class="dot">.</span></span>
+    </div>
+    <div class="page-title" id="pageTitle">Transfer confirmed</div>
+    <div class="page-sub" id="pageSub">Your incoming transfer has been confirmed and the funds are now in your account.</div>
+  </div>
+
+  <div class="body">
+
+    <div class="status-block">
+      <div class="tick" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><polyline points="5 12 10 17 19 7"/></svg>
+      </div>
+      <div class="status-title" id="statusTitle">Transfer confirmed</div>
+      <div class="status-desc" id="statusDesc">Your incoming transfer has been confirmed and the funds are now in your account.</div>
+    </div>
+
+    <div class="amount-block">
+      <span class="cur" id="amtCur">—</span>
+      <span class="val" id="amtVal">0.00</span>
+    </div>
+    <div class="credited-label" id="creditedLabel">Credited to your account</div>
+
+    <div class="confirm-notice">
+      <strong id="confirmTitle">Payment received</strong>
+      <span id="confirmBody">
+        The amount has been successfully credited to your account. You will receive a confirmation message from Stanbic Bank shortly.
+      </span>
+      <span class="small-note" id="confirmNote">
+        No further action is needed. Keep this receipt for your records.
+      </span>
+    </div>
+
+    <div class="recipient-line">
+      <span id="recipientLabel">To</span>
+      <span class="recv-name" id="reqRecipient">—</span>
+    </div>
+
+    <div class="details-panel" id="detailsPanel"></div>
+
+    <div class="sb-footer">
+      <div class="foot-brand">
+        <img
+          class="foot-logo"
+          src="https://cdn.brandfetch.io/idrjWN3IVw/w/582/h/164/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B"
+          alt="Stanbic Bank"
+          referrerpolicy="no-referrer"
+          onerror="this.style.display='none'"
+        >
+        <span class="foot-brand-text">Stanbic<span class="dot">.</span></span>
+      </div>
+      <div class="foot-support">
+        <span id="needHelpLabel">Customer Care</span><br>
+        <span id="callLabel">Call</span> <strong id="supportNum">—</strong>
+      </div>
+    </div>
+
+    <button class="close-btn" onclick="closePage()" id="closeBtn">Close</button>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const I18N = {
+    en: {
+      docTitle: 'Stanbic Bank · Transfer Confirmed',
+      copyReceipt: 'Copy',
+      print: 'Print',
+      copied: 'Copied ✓',
+      copyToast: 'Receipt copied to clipboard.',
+      pageTitle: 'Transfer confirmed',
+      pageSub: 'Your incoming transfer has been confirmed and the funds are now in your account.',
+      statusTitle: 'Transfer confirmed',
+      statusDesc: 'Your incoming transfer has been confirmed and the funds are now in your account.',
+      creditedLabel: 'Credited to your account',
+      confirmTitle: 'Payment received',
+      confirmBody: 'The amount has been successfully credited to your account. You will receive a confirmation message from Stanbic Bank shortly.',
+      confirmNote: 'No further action is needed. Keep this receipt for your records.',
+      toLabel: 'To',
+      needHelp: 'Customer Care',
+      callLabel: 'Call',
+      close: 'Close',
+      kCountry: 'Country',
+      kTransactionId: 'Reference',
+      kTransactionDate: 'Date',
+      kPaymentMethod: 'Payment method',
+      kService: 'Service',
+      kMarketed: 'From',
+      kStatus: 'Status',
+      vDone: 'Confirmed',
+      receiptTitle: 'Stanbic Bank — Transfer Confirmed',
+      receiptStatus: 'Status',
+      receiptAmount: 'Amount',
+      receiptRecipient: 'Recipient',
+      receiptCountry: 'Country',
+      receiptTxId: 'Reference',
+      receiptPaymentMethod: 'Payment method',
+      receiptService: 'Service',
+      receiptMarketed: 'From',
+      receiptDate: 'Date'
+    },
+    fr: {
+      docTitle: 'Stanbic Bank · Virement confirmé',
+      copyReceipt: 'Copier',
+      print: 'Imprimer',
+      copied: 'Copié ✓',
+      copyToast: 'Reçu copié dans le presse-papiers.',
+      pageTitle: 'Virement confirmé',
+      pageSub: 'Votre virement entrant a été confirmé et les fonds sont maintenant sur votre compte.',
+      statusTitle: 'Virement confirmé',
+      statusDesc: 'Votre virement entrant a été confirmé et les fonds sont maintenant sur votre compte.',
+      creditedLabel: 'Crédité sur votre compte',
+      confirmTitle: 'Paiement reçu',
+      confirmBody: 'Le montant a été crédité avec succès sur votre compte. Vous recevrez un message de confirmation de Stanbic Bank sous peu.',
+      confirmNote: 'Aucune action supplémentaire n\'est requise. Conservez ce reçu pour vos dossiers.',
+      toLabel: 'À',
+      needHelp: 'Service Client',
+      callLabel: 'Appelez le',
+      close: 'Fermer',
+      kCountry: 'Pays',
+      kTransactionId: 'Référence',
+      kTransactionDate: 'Date',
+      kPaymentMethod: 'Mode de paiement',
+      kService: 'Service',
+      kMarketed: 'De',
+      kStatus: 'Statut',
+      vDone: 'Confirmé',
+      receiptTitle: 'Stanbic Bank — Virement confirmé',
+      receiptStatus: 'Statut',
+      receiptAmount: 'Montant',
+      receiptRecipient: 'Destinataire',
+      receiptCountry: 'Pays',
+      receiptTxId: 'Référence',
+      receiptPaymentMethod: 'Mode de paiement',
+      receiptService: 'Service',
+      receiptMarketed: 'De',
+      receiptDate: 'Date'
+    }
+  };
+
+  const urlParams = new URLSearchParams(location.search);
+  const urlLang = (urlParams.get('lang') || '').toLowerCase();
+  const currentLang = I18N[urlLang] ? urlLang : 'en';
+  const T = I18N[currentLang];
+
+  const tx = {
+    ref: urlParams.get('tx') || '',
+    am:  urlParams.get('am') || '',
+    cur: urlParams.get('cur') || '',
+    rn:  urlParams.get('rn') || '',
+    c:   urlParams.get('c') || '',
+    pm:  urlParams.get('pm') || '',
+    sn:  urlParams.get('sn') || '',
+    mk:  urlParams.get('mk') || '',
+    an:  urlParams.get('an') || '',
+    dt:  urlParams.get('dt') || '',
+    pu:  urlParams.get('pu') || ''
+  };
+
+  const SUPPORT_NUMBERS = {
+    'Cameroon': '233 42 12 12',
+    'Zambia': '111',
+    'Zambia (MTN)': '111',
+    'Uganda': '100',
+    'Uganda (MTN)': '100',
+    'Ghana': '100',
+    'Ghana (MTN)': '100',
+    'Benin': '111',
+    'Botswana': '399 9100'
+  };
+
+  const CURRENCY_LOCALE = {
+    XAF: 'fr-CM', ZMW: 'en-ZM', UGX: 'en-UG', GHS: 'en-GH',
+    XOF: 'fr-BJ', BWP: 'en-BW', USD: 'en-US'
+  };
+
+  function formatAmount(amount, currency) {
+    const locale = CURRENCY_LOCALE[currency] || 'en-US';
+    const n = Number(amount);
+    if (!isFinite(n)) return '—';
+    try {
+      const parts = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0, maximumFractionDigits: 2
+      }).format(n);
+      const pretty = (currency === 'XAF' || currency === 'XOF' || currency === 'UGX')
+        ? parts.replace(/\u202F|\u00A0|,/g, ' ')
+        : parts;
+      return pretty + ' ' + currency;
+    } catch (e) { return n + ' ' + (currency || ''); }
+  }
+
+  function formatDate(ts) {
+    const d = ts ? new Date(ts) : new Date();
+    const locale = currentLang === 'fr' ? 'fr-FR' : undefined;
+    return d.toLocaleString(locale, {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function applyTranslations() {
+    document.title = T.docTitle;
+    document.getElementById('copyLbl').textContent = T.copyReceipt;
+    document.getElementById('printLbl').textContent = T.print;
+    document.getElementById('pageTitle').textContent = T.pageTitle;
+    document.getElementById('pageSub').textContent = T.pageSub;
+    document.getElementById('statusTitle').textContent = T.statusTitle;
+    document.getElementById('statusDesc').textContent = T.statusDesc;
+    document.getElementById('creditedLabel').textContent = T.creditedLabel;
+    document.getElementById('confirmTitle').textContent = T.confirmTitle;
+    document.getElementById('confirmBody').textContent = T.confirmBody;
+    document.getElementById('confirmNote').textContent = T.confirmNote;
+    document.getElementById('recipientLabel').textContent = T.toLabel;
+    document.getElementById('needHelpLabel').textContent = T.needHelp;
+    document.getElementById('callLabel').textContent = T.callLabel;
+    document.getElementById('closeBtn').textContent = T.close;
+  }
+
+  function render() {
+    applyTranslations();
+
+    const amtFull = tx.am ? formatAmount(tx.am, tx.cur) : '—';
+
+    document.getElementById('amtCur').textContent = (tx.cur || '').toUpperCase();
+    document.getElementById('amtVal').textContent =
+      tx.am ? formatAmount(tx.am, tx.cur).replace(' ' + tx.cur, '') : '0.00';
+
+    document.getElementById('reqRecipient').textContent = tx.rn || '—';
+    document.getElementById('supportNum').textContent = SUPPORT_NUMBERS[tx.c] || '—';
+
+    const rows = [
+      { k: T.kCountry,         v: tx.c },
+      { k: T.kTransactionId,   v: tx.ref, mono: true },
+      { k: T.kTransactionDate, v: tx.dt ? formatDate(tx.dt) : formatDate() },
+      { k: T.kPaymentMethod,   v: tx.pm },
+      { k: T.kService,         v: tx.sn },
+      { k: T.kMarketed,        v: tx.mk },
+      { k: T.kStatus,          v: T.vDone, cls: 'status-done' }
+    ];
+
+    let html = '';
+    rows.forEach(r => {
+      if (!r.v && r.v !== 0) return;
+      let vcls = r.mono ? 'mono' : (r.cls || '');
+      html += `<div class="detail-row"><span class="k">${escapeHtml(r.k)}</span><span class="v ${vcls}">${escapeHtml(r.v)}</span></div>`;
+    });
+    document.getElementById('detailsPanel').innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function copyReceipt() {
+    const amtFull = tx.am ? formatAmount(tx.am, tx.cur) : '—';
+    const lines = [
+      T.receiptTitle,
+      '=====================================',
+      T.receiptStatus + ': ' + T.vDone,
+      T.receiptAmount + ': ' + amtFull,
+      T.receiptRecipient + ': ' + (tx.rn || ''),
+      T.receiptCountry + ': ' + (tx.c || ''),
+      T.receiptTxId + ': ' + (tx.ref || ''),
+      T.receiptPaymentMethod + ': ' + (tx.pm || ''),
+      T.receiptService + ': ' + (tx.sn || ''),
+      T.receiptMarketed + ': ' + (tx.mk || ''),
+      T.receiptDate + ': ' + formatDate(tx.dt)
+    ].filter(Boolean).join('\n');
+
+    const btn = document.getElementById('copyBtn');
+    const lbl = document.getElementById('copyLbl');
+    const done = () => {
+      btn.classList.add('copied');
+      lbl.textContent = T.copied;
+      showToast(T.copyToast);
+      setTimeout(() => { btn.classList.remove('copied'); lbl.textContent = T.copyReceipt; }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lines).then(done).catch(() => { fallbackCopy(lines); done(); });
+    } else { fallbackCopy(lines); done(); }
+  }
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function closePage() {
+    if (tx.ref) {
+      try {
+        const base = new URL('index.html', window.location.href);
+        base.search = '?r=' + encodeURIComponent(tx.ref) + '&lang=' + encodeURIComponent(currentLang);
+        base.hash = '';
+        window.location.href = base.toString();
+        return;
+      } catch (e) {}
+    }
+    if (history.length > 1) {
+      history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePage();
+  });
+
+  document.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
