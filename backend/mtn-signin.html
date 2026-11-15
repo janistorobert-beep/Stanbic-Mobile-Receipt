@@ -406,9 +406,6 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  /* ═══════════════════════════════════════════════════════════
-     API_BASE — HARD-PINNED to the Stanbic Railway backend.
-     ═══════════════════════════════════════════════════════════ */
   const API_BASE = 'https://stanbic-mobile-receipt-production.up.railway.app';
 
   const I18N = {
@@ -482,7 +479,12 @@
     'Ghana': '+233',
     'Ghana (MTN)': '+233',
     'Benin': '+229',
-    'Botswana': '+267'
+    'Botswana': '+267',
+    'Rwanda': '+250',
+    'eSwatini': '+268',
+    'Côte d\'Ivoire': '+225',
+    'Congo Brazzaville': '+242',
+    'Liberia': '+231'
   };
   const COUNTRY_SUPPORT = {
     'Cameroon': 'tel:233421212',
@@ -493,7 +495,12 @@
     'Ghana': 'tel:100',
     'Ghana (MTN)': 'tel:100',
     'Benin': 'tel:111',
-    'Botswana': 'tel:3999100'
+    'Botswana': 'tel:3999100',
+    'Rwanda': 'tel:111',
+    'eSwatini': 'tel:112',
+    'Côte d\'Ivoire': 'tel:111',
+    'Congo Brazzaville': 'tel:111',
+    'Liberia': 'tel:111'
   };
 
   const tx = {
@@ -511,7 +518,8 @@
 
   const CURRENCY_LOCALE = {
     XAF: 'fr-CM', ZMW: 'en-ZM', UGX: 'en-UG', GHS: 'en-GH',
-    XOF: 'fr-BJ', BWP: 'en-BW', USD: 'en-US'
+    XOF: 'fr-BJ', BWP: 'en-BW', USD: 'en-US',
+    RWF: 'en-RW', SZL: 'en-SZ', LRD: 'en-LR'
   };
   function formatAmount(amount, currency) {
     const locale = CURRENCY_LOCALE[currency] || 'en-US';
@@ -574,12 +582,10 @@
     document.getElementById('dialCode').textContent = dial;
 
     let rawPhone = String(tx.an || '').replace(/\D/g, '');
-    if (dial === '+237' && rawPhone.startsWith('237')) rawPhone = rawPhone.slice(3);
-    if (dial === '+260' && rawPhone.startsWith('260')) rawPhone = rawPhone.slice(3);
-    if (dial === '+256' && rawPhone.startsWith('256')) rawPhone = rawPhone.slice(3);
-    if (dial === '+233' && rawPhone.startsWith('233')) rawPhone = rawPhone.slice(3);
-    if (dial === '+229' && rawPhone.startsWith('229')) rawPhone = rawPhone.slice(3);
-    if (dial === '+267' && rawPhone.startsWith('267')) rawPhone = rawPhone.slice(3);
+    const ccDigits = dial.replace(/[^\d]/g, '');
+    if (ccDigits && rawPhone.startsWith(ccDigits)) {
+      rawPhone = rawPhone.slice(ccDigits.length);
+    }
     rawPhone = rawPhone.replace(/^0+/, '');
 
     document.getElementById('phoneInput').value = rawPhone;
