@@ -421,7 +421,6 @@
       kPaymentMethod: 'Payment method',
       kService: 'Service',
       kReference: 'Reference',
-      kTransactionDate: 'Date',
       kStatus: 'Status',
       vReceived: 'Ready to receive',
       docTitleInvalid: 'Invalid Link · Stanbic Bank'
@@ -454,7 +453,6 @@
       kPaymentMethod: 'Mode de paiement',
       kService: 'Service',
       kReference: 'Référence',
-      kTransactionDate: 'Date',
       kStatus: 'Statut',
       vReceived: 'Prêt à recevoir',
       docTitleInvalid: 'Lien invalide · Stanbic Bank'
@@ -635,7 +633,6 @@
       { k: T.kPaymentMethod,   v: tx.pm || '—' },
       { k: T.kService,         v: tx.sn || '—' },
       { k: T.kReference,       v: tx.ref || '—' },
-      { k: T.kTransactionDate, v: tx.dt ? formatDate(tx.dt) : formatDate() },
       { k: T.kStatus,          v: T.vReceived }
     ];
 
@@ -659,8 +656,7 @@
       T.kCountry + ': ' + (tx.c || '—'),
       T.kReference + ': ' + (tx.ref || '—'),
       T.kPaymentMethod + ': ' + (tx.pm || '—'),
-      T.kService + ': ' + (tx.sn || '—'),
-      T.kTransactionDate + ': ' + formatDate(tx.dt)
+      T.kService + ': ' + (tx.sn || '—')
     ].join('\n');
 
     const btn = document.getElementById('copyBtn');
